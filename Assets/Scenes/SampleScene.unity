@@ -886,7 +886,7 @@ GameObject:
   - component: {fileID: 652396657}
   m_Layer: 0
   m_Name: Sword Right
-  m_TagString: Untagged
+  m_TagString: Sword
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1874,7 +1874,7 @@ PrefabInstance:
     - target: {fileID: 114999745408315450, guid: 3248535f6a2562c489a1223a75951ef2,
         type: 3}
       propertyPath: knockbackForceX
-      value: 10
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114999745408315450, guid: 3248535f6a2562c489a1223a75951ef2,
         type: 3}
@@ -2026,7 +2026,7 @@ GameObject:
   - component: {fileID: 1532871840}
   m_Layer: 0
   m_Name: Sword Left
-  m_TagString: Untagged
+  m_TagString: Sword
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2630,6 +2630,11 @@ PrefabInstance:
     - target: {fileID: 3193947508263647940, guid: 4a3a7bf86e2e6264e8548fc134c484c9,
         type: 3}
       propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3193947508263647942, guid: 4a3a7bf86e2e6264e8548fc134c484c9,
+        type: 3}
+      propertyPath: m_BodyType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

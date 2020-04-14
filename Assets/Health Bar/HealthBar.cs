@@ -12,7 +12,6 @@ public class HealthBar : MonoBehaviour {
         bar = transform.Find("Bar");
         playerObject = GameObject.Find("Player");
         playerScript = playerObject.GetComponent<Player>();
-        playerScript.currentHealth = 10;
     }
 
     private void Update() {

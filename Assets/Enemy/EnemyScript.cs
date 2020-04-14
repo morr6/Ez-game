@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyScript : MonoBehaviour {
+
+    [SerializeField] float maxHealth = 30f;
+    private float currentHealth;
+
     private GameObject player;
+    private Player playerScript;
 
     private Animator animator;
+    private Rigidbody2D enemyBody;
 
     public Transform patrolStart;
     public Transform patrolEnd;
@@ -16,7 +22,10 @@ public class EnemyScript : MonoBehaviour {
 
     void Start() {      
         animator = GetComponent<Animator>();
-        player = GameObject.FindGameObjectWithTag("Player");
+        enemyBody = GetComponent<Rigidbody2D>();
+
+        player = GameObject.Find("Player");
+        playerScript = player.GetComponent<Player>();
         
         currentPatrolPoint = patrolStart;
 
@@ -24,6 +33,24 @@ public class EnemyScript : MonoBehaviour {
             speed = -0.75f;
         } else {
             speed = 0.75f;
+        }
+
+        currentHealth = maxHealth;
+    }
+
+    void Update() {
+        Moving();
+        StartCoroutine(Patrol());
+        switchToDead();
+    }
+
+    void Moving() {
+        transform.Translate(Vector2.right * Time.deltaTime * speed);
+
+        if (speed > 0f) {
+            GetComponent<SpriteRenderer>().flipX = true;
+        } else if(speed < 0f) {
+            GetComponent<SpriteRenderer>().flipX = false;
         }
     }
 
@@ -48,27 +75,17 @@ public class EnemyScript : MonoBehaviour {
         }       
     }
 
-    void Moving() {
-        transform.Translate(Vector2.right * Time.deltaTime * speed);
-
-        if (speed > 0f) {
-            GetComponent<SpriteRenderer>().flipX = true;
-        } else if(speed < 0f) {
-            GetComponent<SpriteRenderer>().flipX = false;
+    void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject.tag == "Sword") {
+            currentHealth -= playerScript.playerDamage;
+            enemyBody.AddForce(enemyBody.velocity * -1, ForceMode2D.Impulse);
         }
     }
 
-    void Update() {
-        if(speed != 0) {            
-            animator.SetInteger("AnimState", 2);
-        } else {
-            animator.SetInteger("AnimState", 0);
+    void switchToDead() {
+        if (currentHealth <= 0) {
+            Destroy(gameObject);
         }
-
-
-        Moving();
-        StartCoroutine(Patrol());
-        
     }
 }
 
