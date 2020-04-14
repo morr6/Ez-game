@@ -29,7 +29,7 @@ public class Player : MonoBehaviour {
 
     IEnumerator HitStop() {
         justAfterHit = true;
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.5f);
         justAfterHit = false;
     }
 
@@ -89,11 +89,6 @@ public class Player : MonoBehaviour {
         //Set AirSpeed in animator
         animator.SetFloat("AirSpeed", playerBody.velocity.y);
 
-        // Jump
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && !isAttacking && grounded && !isDead) {
-            Jump();
-        }
-
         // stop on dead
         if (isDead) {
             playerBody.velocity = new Vector2(0, 0); 
@@ -127,6 +122,12 @@ public class Player : MonoBehaviour {
             else if (inputX < 0)
                 GetComponent<SpriteRenderer>().flipX = false;
         }
+
+        // Jump
+        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && !isAttacking && grounded && !isDead) {
+            Jump();
+        }
+
         // -- Handle Animations --
         //Recover
         if (Input.GetKeyDown("e")) {

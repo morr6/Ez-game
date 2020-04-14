@@ -12,7 +12,6 @@ public class EnemyScript : MonoBehaviour {
 
     private Animator animator;
     private Rigidbody2D enemyBody;
-    private bool isDead = false;
 
     public Transform patrolStart;
     public Transform patrolEnd;
@@ -20,6 +19,8 @@ public class EnemyScript : MonoBehaviour {
 
     public float speed;
     public float viewRange = 1f;
+
+    public ParticleSystem deathParticles;
 
     void Start() {      
         animator = GetComponent<Animator>();
@@ -41,61 +42,60 @@ public class EnemyScript : MonoBehaviour {
 
     void Update() {
         Moving();
-        StartCoroutine(Patrol());
-        StartCoroutine(switchToDead());
 
-        
+
+        if (Vector2.Distance(currentPatrolPoint.position, transform.position) < .5f)
+            StartCoroutine(Patrol());         
+
+
+        if (currentHealth <= 0)
+            switchToDead();
     }
 
     void Moving() {
-        if (!isDead) {
-            transform.Translate(Vector2.right * Time.deltaTime * speed);
+        transform.Translate(Vector2.right * Time.deltaTime * speed);
 
-            if (speed > 0f) {
-                GetComponent<SpriteRenderer>().flipX = true;
-            } else if(speed < 0f) {
-                GetComponent<SpriteRenderer>().flipX = false;
-            }
+        if (speed > 0f) {
+            GetComponent<SpriteRenderer>().flipX = true;
+        } else if(speed < 0f) {
+            GetComponent<SpriteRenderer>().flipX = false;
         }
     }
 
     IEnumerator Patrol() {
-        if (Vector2.Distance(currentPatrolPoint.position, transform.position) < .5f && !isDead) {
-            speed = 0;
-            yield return new WaitForSeconds(3);
+        speed = 0;
+        yield return new WaitForSeconds(3);
 
-            if (speed == 0) {
-                if (currentPatrolPoint == patrolStart) {
-                    currentPatrolPoint = patrolEnd;
-                } else {
-                    currentPatrolPoint = patrolStart;
-                }
+        if (speed == 0) {
+            if (currentPatrolPoint == patrolStart) {
+                currentPatrolPoint = patrolEnd;
+            } else {
+                currentPatrolPoint = patrolStart;
+            }
 
-                if (currentPatrolPoint.position.x < transform.position.x) {
-                    speed = -0.75f;
-                } else {
-                    speed = 0.75f;
-                }
-            }          
-        }       
+            if (currentPatrolPoint.position.x < transform.position.x) {
+                speed = -0.75f;
+            } else {
+                speed = 0.75f;
+            }
+        }      
     }
 
     void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject.tag == "Sword") {
+            Debug.Log(currentHealth);
+
             currentHealth -= playerScript.playerDamage;
-            enemyBody.AddForce(enemyBody.velocity * -1, ForceMode2D.Impulse);
+
+            Debug.Log(currentHealth);
         }
     }
 
-    IEnumerator switchToDead() {
-        if (currentHealth <= 0) {
-            isDead = true;
-            enemyBody.bodyType = RigidbodyType2D.Dynamic;
+    public void switchToDead() {
+        Instantiate(deathParticles, transform.position, Quaternion.identity);
 
-            yield return new WaitForSeconds(1);
-            Destroy(gameObject);
-        }
-    }
+        Destroy(gameObject);
+    }   
 }
 
 
