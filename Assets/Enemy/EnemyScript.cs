@@ -12,6 +12,7 @@ public class EnemyScript : MonoBehaviour {
 
     private Animator animator;
     private Rigidbody2D enemyBody;
+    private bool isDead = false;
 
     public Transform patrolStart;
     public Transform patrolEnd;
@@ -41,21 +42,25 @@ public class EnemyScript : MonoBehaviour {
     void Update() {
         Moving();
         StartCoroutine(Patrol());
-        switchToDead();
+        StartCoroutine(switchToDead());
+
+        
     }
 
     void Moving() {
-        transform.Translate(Vector2.right * Time.deltaTime * speed);
+        if (!isDead) {
+            transform.Translate(Vector2.right * Time.deltaTime * speed);
 
-        if (speed > 0f) {
-            GetComponent<SpriteRenderer>().flipX = true;
-        } else if(speed < 0f) {
-            GetComponent<SpriteRenderer>().flipX = false;
+            if (speed > 0f) {
+                GetComponent<SpriteRenderer>().flipX = true;
+            } else if(speed < 0f) {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
         }
     }
 
     IEnumerator Patrol() {
-        if (Vector2.Distance(currentPatrolPoint.position, transform.position) < .5f) {
+        if (Vector2.Distance(currentPatrolPoint.position, transform.position) < .5f && !isDead) {
             speed = 0;
             yield return new WaitForSeconds(3);
 
@@ -82,8 +87,12 @@ public class EnemyScript : MonoBehaviour {
         }
     }
 
-    void switchToDead() {
+    IEnumerator switchToDead() {
         if (currentHealth <= 0) {
+            isDead = true;
+            enemyBody.bodyType = RigidbodyType2D.Dynamic;
+
+            yield return new WaitForSeconds(1);
             Destroy(gameObject);
         }
     }

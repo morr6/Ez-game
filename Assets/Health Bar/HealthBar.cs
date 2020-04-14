@@ -5,13 +5,13 @@ using UnityEngine;
 public class HealthBar : MonoBehaviour {
 
     private Transform bar;
-    private GameObject playerObject;
+    private GameObject player;
     private Player playerScript;
 
     private void Start() {
         bar = transform.Find("Bar");
-        playerObject = GameObject.Find("Player");
-        playerScript = playerObject.GetComponent<Player>();
+        player = GameObject.Find("Player");
+        playerScript = player.GetComponent<Player>();
     }
 
     private void Update() {
